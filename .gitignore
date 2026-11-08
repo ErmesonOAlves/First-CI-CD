@@ -1,0 +1,10 @@
+.env
+.env.test
+
+node_modules/
+.idea/
+coverage/
+.idea/.gitignore
+.idea/FirstCICD.iml
+.idea/modules.xml
+.idea/vcs.xml

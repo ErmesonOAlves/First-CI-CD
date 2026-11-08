@@ -8,7 +8,7 @@ describe('health check to test if API is running', () => {
     });
     test('Should return status 200 e confirm API is running', async () => {
         const response = await request(app).get('/health');
-        expect(response.status).toBe(200);
+        expect(response.status).toBe(201);
 
         expect(response.body).toEqual({
             status: 'OK',

@@ -4,8 +4,9 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "node --env-file=.env.test --experimental-vm-modules ./node_modules/jest/bin/jest.js --runInBand",    "dev": "nodemon src/server.js",
-    "start": "node src/server.js"
+    "test": "node --env-file=.env.test --experimental-vm-modules ./node_modules/jest/bin/jest.js --runInBand",
+    "dev": "nodemon server.js",
+    "start": "node server.js"
   },
   "private": true,
   "keywords": [],

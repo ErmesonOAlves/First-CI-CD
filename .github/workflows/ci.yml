@@ -1,0 +1,60 @@
+
+# NOVO: workflow de integração contínua
+name: CI
+
+# NOVO: eventos que iniciam a execução
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# NOVO: configuração dos trabalhos
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    # NOVO: banco PostgreSQL temporário para os testes
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: app
+          POSTGRES_PASSWORD: senha-de-teste
+          POSTGRES_DB: app_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U app -d app_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    steps:
+      # NOVO: baixa o código do repositório
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # NOVO: configura o Node.js 24
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      # NOVO: instala as dependências usando o package-lock.json
+      - name: Install dependencies
+        run: npm ci
+
+      # NOVO: cria o arquivo de ambiente necessário pelo Jest
+      - name: Configure test environment
+        run: echo "DATABASE_URL=postgresql://app:senha-de-teste@localhost:5432/app_test" > .env.test
+
+      # NOVO: cria a tabela antes dos testes
+      - name: Create database schema
+        env:
+          PGPASSWORD: senha-de-teste
+        run: psql -h localhost -U app -d app_test -f src/database/schema.sql
+
+      # NOVO: executa os testes automatizados
+      - name: Run tests
+        run: npm test
